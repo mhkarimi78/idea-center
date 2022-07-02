@@ -1,47 +1,47 @@
-import React, { useEffect, useState } from 'react'
-import Head from 'next/head'
+import React, { useEffect, useState } from "react";
+import Head from "next/head";
 
-import { publicFetch } from '../../util/fetcher'
+import { publicFetch } from "../../util/fetcher";
 
-import Layout from '../../components/layout'
-import PageTitle from '../../components/page-title'
-import DetailPageContainer from '../../components/detail-page-container'
-import PostWrapper from '../../components/post/post-wrapper'
-import PostVote from '../../components/post/post-vote'
-import PostSummary from '../../components/post/post-summary'
-import CommentList from '../../components/post/comment-list'
-import CommentItem from '../../components/post/comment-list/comment-item'
-import AnswerContainer from '../../components/answer-container'
-import AddAnswer from '../../components/add-answer'
-import { Spinner } from '../../components/icons'
+import Layout from "../../components/layout";
+import PageTitle from "../../components/page-title";
+import DetailPageContainer from "../../components/detail-page-container";
+import PostWrapper from "../../components/post/post-wrapper";
+import PostVote from "../../components/post/post-vote";
+import PostSummary from "../../components/post/post-summary";
+import CommentList from "../../components/post/comment-list";
+import CommentItem from "../../components/post/comment-list/comment-item";
+import AnswerContainer from "../../components/answer-container";
+import AddAnswer from "../../components/add-answer";
+import { Spinner } from "../../components/icons";
 
 const QuestionDetail = ({ questionId, title }) => {
-  const [question, setQuestion] = useState(null)
-  const [answerSortType, setAnswersSortType] = useState('Votes')
+  const [question, setQuestion] = useState(null);
+  const [answerSortType, setAnswersSortType] = useState("Votes");
 
   useEffect(() => {
     const fetchQuestion = async () => {
-      const { data } = await publicFetch.get(`/question/${questionId}`)
-      setQuestion(data)
-    }
+      const { data } = await publicFetch.get(`offer/detail/${questionId}`);
+      setQuestion(data);
+    };
 
-    fetchQuestion()
-  }, [])
+    fetchQuestion();
+  }, []);
 
   const handleSorting = () => {
     switch (answerSortType) {
-      case 'Votes':
-        return (a, b) => b.score - a.score
-      case 'Newest':
-        return (a, b) => new Date(b.created) - new Date(a.created)
-      case 'Oldest':
-        return (a, b) => new Date(a.created) - new Date(b.created)
+      case "Votes":
+        return (a, b) => b.score - a.score;
+      case "Newest":
+        return (a, b) => new Date(b.created) - new Date(a.created);
+      case "Oldest":
+        return (a, b) => new Date(a.created) - new Date(b.created);
       default:
-        break
+        break;
     }
-  }
+  };
 
-  const isClient = typeof window === 'object'
+  const isClient = typeof window === "object";
 
   return (
     <Layout extra={false}>
@@ -63,27 +63,27 @@ const QuestionDetail = ({ questionId, title }) => {
           <>
             <PostWrapper borderBottom={false}>
               <PostVote
-                score={question.score}
-                votes={question.votes}
+                score={question?.like}
+                votes={question?.votes}
                 questionId={questionId}
                 setQuestion={setQuestion}
               />
               <PostSummary
-                tags={question.tags}
-                author={question.author}
-                created={question.created}
+                tags={question?.categories}
+                author={question?.author}
+                created={question?.created_at}
                 questionId={questionId}
               >
-                {question.text}
+                {question?.description}
               </PostSummary>
               <CommentList questionId={questionId} setQuestion={setQuestion}>
-                {question.comments.map(({ id, author, created, body }) => (
+                {question?.comments?.map(({ id, author, created, body }) => (
                   <CommentItem
                     key={id}
                     commentId={id}
                     questionId={questionId}
-                    author={author.username}
-                    isOwner={author.username === question.author.username}
+                    author={author?.username}
+                    isOwner={author?.username === question?.author?.username}
                     created={created}
                     setQuestion={setQuestion}
                   >
@@ -93,13 +93,13 @@ const QuestionDetail = ({ questionId, title }) => {
               </CommentList>
             </PostWrapper>
 
-            {question.answers.length > 0 && (
+            {question?.answers?.length > 0 && (
               <AnswerContainer
-                answersCount={question.answers.length}
+                answersCount={question?.answers?.length}
                 answerSortType={answerSortType}
                 setAnswerSortType={setAnswersSortType}
               >
-                {question.answers.sort(handleSorting()).map((answer) => (
+                {question?.answers?.sort(handleSorting()).map((answer) => (
                   <PostWrapper key={answer.id}>
                     <PostVote
                       score={answer.score}
@@ -129,7 +129,9 @@ const QuestionDetail = ({ questionId, title }) => {
                           questionId={questionId}
                           answerId={answer.id}
                           author={author.username}
-                          isOwner={author.username === question.author.username}
+                          isOwner={
+                            author.username === question?.author?.username
+                          }
                           created={created}
                           setQuestion={setQuestion}
                         >
@@ -143,7 +145,7 @@ const QuestionDetail = ({ questionId, title }) => {
             )}
 
             <AddAnswer
-              tags={question.tags}
+              tags={question?.categories}
               id={questionId}
               setQuestion={setQuestion}
             />
@@ -151,23 +153,23 @@ const QuestionDetail = ({ questionId, title }) => {
         )}
       </DetailPageContainer>
     </Layout>
-  )
-}
+  );
+};
 
 export async function getServerSideProps(context) {
-  const slug = context.params.slug
-  const questionId = slug.split('-').shift()
+  const slug = context.params.slug;
+  const questionId = slug.split("-").shift();
   const title = slug
-    ?.substr(slug.indexOf('-') + 1)
-    .split('-')
-    .join(' ')
+    ?.substr(slug.indexOf("-") + 1)
+    .split("-")
+    .join(" ");
 
   return {
     props: {
       questionId,
-      title
-    }
-  }
+      title,
+    },
+  };
 }
 
-export default QuestionDetail
+export default QuestionDetail;

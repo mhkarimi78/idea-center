@@ -1,44 +1,44 @@
-import React, { useState, useContext } from 'react'
-import Link from 'next/link'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
+import React, { useState, useContext } from "react";
+import Link from "next/link";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
-import { FetchContext } from '../../store/fetch'
-import { AuthContext } from '../../store/auth'
-import ModalContext from '../../store/modal'
+import { FetchContext } from "../../store/fetch";
+import { AuthContext } from "../../store/auth";
+import ModalContext from "../../store/modal";
 
-import TextArea from '../textarea'
-import Button from '../button'
-import Tag from '../tag'
+import TextArea from "../textarea";
+import Button from "../button";
+import Tag from "../tag";
 
-import styles from './add-answer.module.css'
+import styles from "./add-answer.module.css";
 
 const AddAnswer = ({ id, tags, setQuestion }) => {
-  const { authAxios } = useContext(FetchContext)
-  const { isAuthenticated } = useContext(AuthContext)
-  const { handleComponentVisible } = useContext(ModalContext)
+  const { authAxios } = useContext(FetchContext);
+  const { isAuthenticated } = useContext(AuthContext);
+  const { handleComponentVisible } = useContext(ModalContext);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   return (
     <Formik
-      initialValues={{ text: '' }}
+      initialValues={{ text: "" }}
       onSubmit={async (values, { setStatus, resetForm }) => {
-        setLoading(true)
+        setLoading(true);
         try {
-          const { data } = await authAxios.post(`/answer/${id}`, values)
-          setQuestion(data)
-          resetForm({})
+          const { data } = await authAxios.post(`/answer/${id}`, values);
+          setQuestion(data);
+          resetForm({});
         } catch (error) {
-          setStatus(error.response.data.message)
+          setStatus(error.response.data.message);
         }
-        setLoading(false)
+        setLoading(false);
       }}
       validationSchema={Yup.object({
         text: Yup.string()
-          .required('Body is missing.')
-          .min(30, 'Body must be at least 30 characters.')
-          .max(30000, 'Body cannot be longer than 30000 characters.')
+          .required("Body is missing.")
+          .min(30, "Body must be at least 30 characters.")
+          .max(30000, "Body cannot be longer than 30000 characters."),
       })}
     >
       {({
@@ -52,7 +52,7 @@ const AddAnswer = ({ id, tags, setQuestion }) => {
         isSubmitting,
       }) => (
         <form className={styles.container} onSubmit={handleSubmit}>
-          <h2>Your answer</h2>
+          <h2>Your Opinion</h2>
           <TextArea
             name="text"
             autoComplete="off"
@@ -70,25 +70,27 @@ const AddAnswer = ({ id, tags, setQuestion }) => {
               primary
               isLoading={loading}
               disabled={isSubmitting}
-              onClick={() => !isAuthenticated() && handleComponentVisible(true, 'signup')}
+              onClick={() =>
+                !isAuthenticated() && handleComponentVisible(true, "signup")
+              }
             >
-              Post Your Answer
+              Post Your Opinion
             </Button>
           </div>
           <h3>
-            Browse other questions tagged &nbsp;
-            {tags.map((tag) => (
-              <Tag key={tag}>{tag}</Tag>
+            Browse other ideas tagged &nbsp;
+            {tags?.map(({ id, title }) => (
+              <Tag key={id}>{title}</Tag>
             ))}
             or &nbsp;
-            <Link href="/questions/ask" as="/questions/ask">
-              <a>ask your own question.</a>
+            <Link href="/ideas/share" as="/ideas/share">
+              <a>share your own idea.</a>
             </Link>
           </h3>
         </form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
-export default AddAnswer
+export default AddAnswer;

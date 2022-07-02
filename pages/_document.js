@@ -1,11 +1,11 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document'
-import React from 'react'
-import SiteConfig from '../site.config'
+import Document, { Html, Head, Main, NextScript } from "next/document";
+import React from "react";
+import SiteConfig from "../site.config";
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
-    const initialProps = await Document.getInitialProps(ctx)
-    return { ...initialProps }
+    const initialProps = await Document.getInitialProps(ctx);
+    return { ...initialProps };
   }
 
   render() {
@@ -15,7 +15,10 @@ class MyDocument extends Document {
           {/* base */}
           <meta charSet="utf-8" />
           <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          {/* <meta
+            name="viewport"
+            content="viewport-fit=cover ,width=device-width, initial-scale=1"
+          /> */}
           <meta name="description" content={SiteConfig.description} />
 
           {/* facebook */}
@@ -40,7 +43,7 @@ class MyDocument extends Document {
               <script
                 type="text/javascript"
                 dangerouslySetInnerHTML={{
-                  __html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${SiteConfig.googleAnalytic}');`
+                  __html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${SiteConfig.googleAnalytic}');`,
                 }}
               />
             </>
@@ -59,8 +62,8 @@ class MyDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }
 
-export default MyDocument
+export default MyDocument;

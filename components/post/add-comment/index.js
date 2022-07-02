@@ -1,49 +1,49 @@
-import React, { useState, useContext } from 'react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
+import React, { useState, useContext } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
-import { FetchContext } from '../../../store/fetch'
+import { FetchContext } from "../../../store/fetch";
 
-import TextArea from '../../textarea'
-import Button from '../../button'
+import TextArea from "../../textarea";
+import Button from "../../button";
 
-import styles from './add-comment.module.css'
+import styles from "./add-comment.module.css";
 
 const AddComment = ({
   questionId,
   answerId,
   setShowAddComment,
-  setQuestion
+  setQuestion,
 }) => {
-  const { authAxios } = useContext(FetchContext)
+  const { authAxios } = useContext(FetchContext);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   return (
     <Formik
-      initialValues={{ comment: '' }}
+      initialValues={{ comment: "" }}
       onSubmit={async (values, { setStatus, resetForm }) => {
-        setLoading(true)
+        setLoading(true);
         try {
-          const { data } = await authAxios.post(
-            `/comment/${questionId}/${answerId ? answerId : ''}`,
-            values
-          )
+          const { data } = await authAxios.post(`social/comment/`, {
+            text: values.comment,
+            offer: questionId,
+          });
 
-          setQuestion(data)
+          setQuestion(data);
 
-          resetForm({})
-          setShowAddComment(false)
+          resetForm({});
+          setShowAddComment(false);
         } catch (error) {
-          setStatus(error.response.data.message)
+          setStatus(error.response.data.message);
         }
-        setLoading(false)
+        setLoading(false);
       }}
       validationSchema={Yup.object({
         comment: Yup.string()
-          .required('Comment is missing.')
-          .min(5, 'Comment must be at least 5 characters.')
-          .max(1000, 'Comment cannot be longer than 1000 characters.')
+          .required("Comment is missing.")
+          .min(5, "Comment must be at least 5 characters.")
+          .max(1000, "Comment cannot be longer than 1000 characters."),
       })}
     >
       {({
@@ -54,7 +54,7 @@ const AddComment = ({
         handleChange,
         handleBlur,
         handleSubmit,
-        isSubmitting
+        isSubmitting,
       }) => (
         <form className={styles.container} onSubmit={handleSubmit}>
           <TextArea
@@ -81,7 +81,7 @@ const AddComment = ({
         </form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
-export default AddComment
+export default AddComment;

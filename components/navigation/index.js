@@ -14,11 +14,11 @@ const Navigation = () => {
       <NavItem
         href="/"
         selected={
-          router.pathname == '/' || router.pathname.split('/')[1] == 'questions'
+          router.pathname == '/' || router.pathname.split('/')[1] == 'ideas'
         }
       >
         <World />
-        <span>Stack Overflow</span>
+        <span>Idea Center</span>
       </NavItem>
 
       <NavItem href="/tags" selected={router.pathname == '/tags'}>

@@ -1,47 +1,59 @@
-import React, { useState, useContext } from 'react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
+import React, { useState, useContext } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
-import { publicFetch } from '../../../util/fetcher'
-import { AuthContext } from '../../../store/auth'
-import ModalContext from '../../../store/modal'
+import { publicFetch } from "../../../util/fetcher";
+import { AuthContext } from "../../../store/auth";
+import ModalContext from "../../../store/modal";
 
-import FormInput from '../../form-input'
-import Button from '../../button'
+import FormInput from "../../form-input";
+import Button from "../../button";
 
-import styles from './login-form.module.css'
+import styles from "./login-form.module.css";
 
 const LoginForm = () => {
-  const { setAuthState } = useContext(AuthContext)
-  const { setIsComponentVisible } = useContext(ModalContext)
+  const { setAuthState } = useContext(AuthContext);
+  const { setIsComponentVisible } = useContext(ModalContext);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   return (
     <Formik
-      initialValues={{ username: '', password: '' }}
+      initialValues={{ email: "", password: "", username: "" }}
       onSubmit={async (values, { setStatus, resetForm }) => {
-        setLoading(true)
-        try {
-          const { data } = await publicFetch.post('authenticate', values)
-          const { token, expiresAt, userInfo } = data
-          setAuthState({ token, expiresAt, userInfo })
-          resetForm({})
-          setIsComponentVisible(false)
-        } catch (error) {
-          setStatus(error.response.data.message)
-        }
-        setLoading(false)
+        setLoading(true);
+        publicFetch
+          .post("token/login/", values)
+          .then((res) => {
+            console.log("jiz", res?.data?.auth_token);
+            const token = res?.data?.auth_token;
+            const userInfo = {
+              email: values.email,
+              username: values.username,
+              password: values.password,
+            };
+            setAuthState({ token, userInfo });
+            resetForm({});
+            setIsComponentVisible(false);
+          })
+          .catch((error) => {
+            setStatus(error?.response?.data?.non_field_errors);
+          });
+        setLoading(false);
       }}
       validationSchema={Yup.object({
         username: Yup.string()
-          .required('Required')
-          .max(16, 'Must be at most 16 characters long')
-          .matches(/^[a-zA-Z0-9_-]+$/, 'Contains invalid characters'),
+          .required("Required")
+          .max(16, "Must be at most 16 characters long")
+          .matches(/^[a-zA-Z0-9_-]+$/, "Contains invalid characters"),
+        email: Yup.string()
+          .required("Required")
+          .min(8, "Must be at least 8 characters long")
+          .max(50, "Must be at most 50 characters long"),
         password: Yup.string()
-          .required('Required')
-          .min(6, 'Must be at least 6 characters long')
-          .max(50, 'Must be at most 50 characters long')
+          .required("Required")
+          .min(6, "Must be at least 6 characters long")
+          .max(50, "Must be at most 50 characters long"),
       })}
     >
       {({
@@ -52,7 +64,7 @@ const LoginForm = () => {
         handleChange,
         handleBlur,
         handleSubmit,
-        isSubmitting
+        isSubmitting,
       }) => (
         <form onSubmit={handleSubmit} className={styles.form}>
           <FormInput
@@ -67,15 +79,15 @@ const LoginForm = () => {
             errorMessage={errors.username && errors.username}
           />
           <FormInput
-            label="Phone Number"
+            label="Email"
             type="text"
-            name="username"
+            name="email"
             autoComplete="off"
-            value={values.username}
+            value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
-            hasError={touched.username && errors.username}
-            errorMessage={errors.username && errors.username}
+            hasError={touched.email && errors.email}
+            errorMessage={errors.email && errors.email}
           />
           <FormInput
             label="Password"
@@ -102,7 +114,7 @@ const LoginForm = () => {
         </form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;

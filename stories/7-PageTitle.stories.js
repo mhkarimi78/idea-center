@@ -7,7 +7,7 @@ export default {
 }
 
 export const PageTitle = () => (
-  <TopPageTitle title="Ask Questions">
+  <TopPageTitle title="Share Ideas">
     lorem ipsum dolor sit amet, consectetur adip Lorem ipsum, dolor sit amet
     consectetur adipisicing elit. Debitis odit dolorum cum ipsa blanditiis
     deserunt nesciunt eaque veritatis corporis. Commodi repellat non inventore
@@ -16,13 +16,13 @@ export const PageTitle = () => (
 )
 
 export const WithButton = () => (
-  <TopPageTitle title="Ask Questions" button>
+  <TopPageTitle title="Share Ideas" button>
     lorem ipsum dolor sit amet, consectetur adip Lorem ipsum, dolor sit amet
   </TopPageTitle>
 )
 
 export const NoBorder = () => (
-  <TopPageTitle title="Ask Questions" borderBottom={false}>
+  <TopPageTitle title="Share Ideas" borderBottom={false}>
     lorem ipsum dolor sit amet, consectetur adip Lorem ipsum, dolor sit amet
     consectetur adipisicing elit. Debitis odit dolorum cum ipsa blanditiis
     deserunt nesciunt eaque veritatis corporis. Commodi repellat non inventore

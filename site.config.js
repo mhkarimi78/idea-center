@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'IdeaCenter',
+  title: 'Idea Center',
   description: 'Where People Share Their Ideas',
   siteUrl: 'https://idea-center.vercel.app',
   googleAnalytic: 'UA-149699646-1',

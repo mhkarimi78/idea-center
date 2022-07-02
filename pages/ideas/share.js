@@ -5,11 +5,11 @@ import QuestionAskView from '../../components/question-ask-view'
 import Header from '../../components/layout/header'
 import QuestionForm from '../../components/question-ask-view/question-form'
 
-const Ask = () => {
+const Share = () => {
   return (
     <div>
       <Head>
-        <title>Ask a Question - Clone of Stackoverflow</title>
+        <title>Share your Idea - Idea Center</title>
       </Head>
 
       <Header />
@@ -20,4 +20,4 @@ const Ask = () => {
   )
 }
 
-export default Ask
+export default Share

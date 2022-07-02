@@ -1,36 +1,32 @@
-import React, { useEffect, useContext } from 'react'
-import Link from 'next/link'
-import cn from 'classnames'
+import React, { useEffect, useContext } from "react";
+import Link from "next/link";
+import cn from "classnames";
 
-import useComponentVisible from '../../../hooks/useComponentVisible'
-import useWindowSize from '../../../hooks/useWindowSize'
-import CONST from '../../../constants'
-import ModalContext from '../../../store/modal'
-import { AuthContext } from '../../../store/auth'
+import useComponentVisible from "../../../hooks/useComponentVisible";
+import useWindowSize from "../../../hooks/useWindowSize";
+import CONST from "../../../constants";
+import ModalContext from "../../../store/modal";
+import { AuthContext } from "../../../store/auth";
 
-import Button from '../../button'
-import NavigationDropdown from '../../navigation-dropdown'
-import { Menu, Close, Logo } from '../../icons'
+import Button from "../../button";
+import NavigationDropdown from "../../navigation-dropdown";
+import { Menu, Close, Logo } from "../../icons";
 
-import styles from './header.module.css'
+import styles from "./header.module.css";
 
 const Header = ({ className, ...props }) => {
-  const { handleComponentVisible } = useContext(ModalContext)
-  const { isAuthenticated, authState, logout } = useContext(AuthContext)
+  const { handleComponentVisible } = useContext(ModalContext);
+  const { isAuthenticated, authState, logout } = useContext(AuthContext);
 
-  const {
-    ref,
-    toggleRef,
-    isComponentVisible,
-    setIsComponentVisible
-  } = useComponentVisible(false)
-  const size = useWindowSize()
+  const { ref, toggleRef, isComponentVisible, setIsComponentVisible } =
+    useComponentVisible(false);
+  const size = useWindowSize();
 
   useEffect(() => {
     if (size.width > CONST.MOBILE_SIZE) {
-      setIsComponentVisible(false)
+      setIsComponentVisible(false);
     }
-  }, [size])
+  }, [size]);
 
   return (
     <header className={cn(styles.header, className)} {...props}>
@@ -54,7 +50,7 @@ const Header = ({ className, ...props }) => {
         {isAuthenticated() ? (
           <div className={styles.userInfo}>
             <p>
-              Welcome{' '}
+              Welcome to Idea Center{" "}
               <Link
                 href="/users/[user]"
                 as={`/users/${authState.userInfo.username}`}
@@ -69,14 +65,14 @@ const Header = ({ className, ...props }) => {
             <Button
               className={styles.auth}
               secondary
-              onClick={() => handleComponentVisible(true, 'login')}
+              onClick={() => handleComponentVisible(true, "login")}
             >
               Log in
             </Button>
             <Button
               className={styles.auth}
               primary
-              onClick={() => handleComponentVisible(true, 'signup')}
+              onClick={() => handleComponentVisible(true, "signup")}
             >
               Sign up
             </Button>
@@ -86,7 +82,7 @@ const Header = ({ className, ...props }) => {
 
       <div ref={ref}>{isComponentVisible && <NavigationDropdown />}</div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

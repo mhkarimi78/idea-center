@@ -1,14 +1,14 @@
-import React, { useContext } from 'react'
+import React, { useContext } from "react";
 
-import { TagContext } from '../../../store/tag'
+import { TagContext } from "../../../store/tag";
 
-import Tag from '../../tag'
-import { Spinner } from '../../icons'
+import Tag from "../../tag";
+import { Spinner } from "../../icons";
 
-import styles from './extra.module.css'
+import styles from "./extra.module.css";
 
 const Extra = ({ marginTop = 24 }) => {
-  const { tagState } = useContext(TagContext)
+  const { tagState } = useContext(TagContext);
 
   return (
     <div className={styles.container}>
@@ -23,15 +23,15 @@ const Extra = ({ marginTop = 24 }) => {
           </div>
         )}
         <div className={styles.popularTags}>
-          {tagState?.map((tag) => (
-            <Tag key={tag._id} count={tag.count}>
-              {tag._id}
+          {tagState?.map(({ id, title, count = 8888 }) => (
+            <Tag key={id} count={count}>
+              {title}
             </Tag>
           ))}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Extra
+export default Extra;

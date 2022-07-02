@@ -1,46 +1,48 @@
-import React, { useEffect, useState } from 'react'
-import Head from 'next/head'
+import React, { useEffect, useState, useContext } from "react";
+import Head from "next/head";
 
-import { publicFetch } from '../../util/fetcher'
+import { publicFetch } from "../../util/fetcher";
 
-import Layout from '../../components/layout'
-import PageTitle from '../../components/page-title'
-import SearchInput from '../../components/search-input'
-import UserList from '../../components/user-list'
-import UserItem from '../../components/user-list/user-item'
-import { Spinner } from '../../components/icons'
+import Layout from "../../components/layout";
+import PageTitle from "../../components/page-title";
+import SearchInput from "../../components/search-input";
+import UserList from "../../components/user-list";
+import UserItem from "../../components/user-list/user-item";
+import { Spinner } from "../../components/icons";
+import { FetchContext } from "../../store/fetch";
 
 function UsersPage() {
-  const [searchTerm, setSearchTerm] = useState(null)
-  const [users, setUsers] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [searchTerm, setSearchTerm] = useState(null);
+  const [users, setUsers] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { authAxios } = useContext(FetchContext);
 
   useEffect(() => {
     if (searchTerm === null) {
       const fetchUser = async () => {
-        const { data } = await publicFetch.get('/users')
-        setUsers(data)
-      }
+        const { data } = await authAxios.get("auth/users");
+        setUsers(data);
+      };
 
-      fetchUser()
+      fetchUser();
     } else {
       const delayDebounceFn = setTimeout(async () => {
-        setLoading(true)
+        setLoading(true);
         const { data } = await publicFetch.get(
           searchTerm ? `/users/${searchTerm}` : `/users`
-        )
-        setUsers(data)
-        setLoading(false)
-      }, 500)
+        );
+        setUsers(data);
+        setLoading(false);
+      }, 500);
 
-      return () => clearTimeout(delayDebounceFn)
+      return () => clearTimeout(delayDebounceFn);
     }
-  }, [searchTerm])
+  }, [searchTerm]);
 
   return (
     <Layout extra={false}>
       <Head>
-        <title>Users - Clone of Stackoverflow</title>
+        <title>Users - Idea Center</title>
       </Head>
 
       <PageTitle title="Users" borderBottom={false} />
@@ -63,9 +65,11 @@ function UsersPage() {
       {users && (
         <>
           <UserList>
-            {users?.map(({ username, profilePhoto, created, id }) => (
+            {users?.map(({ username, profilePhoto, created, id, email }) => (
               <UserItem
                 key={id}
+                id={id}
+                email={email}
                 username={username}
                 profilePhoto={profilePhoto}
                 created={created}
@@ -79,7 +83,7 @@ function UsersPage() {
         </>
       )}
     </Layout>
-  )
+  );
 }
 
-export default UsersPage
+export default UsersPage;

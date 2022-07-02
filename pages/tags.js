@@ -18,7 +18,7 @@ function TagsPage() {
   useEffect(() => {
     if (searchTerm === null) {
       const fetchUser = async () => {
-        const { data } = await publicFetch.get('/tags')
+        const { data } = await publicFetch.get('/offer/cat/')
         setTags(data)
       }
 
@@ -40,7 +40,7 @@ function TagsPage() {
   return (
     <Layout extra={false}>
       <Head>
-        <title>Tags - Clone of Stackoverflow</title>
+        <title>Tags - Idea Center</title>
       </Head>
 
       <PageTitle title="Tags" borderBottom={false}>
@@ -67,8 +67,8 @@ function TagsPage() {
       {tags && (
         <>
           <TagList>
-            {tags?.map(({ count, _id }) => (
-              <TagItem key={_id} count={count}>
+            {tags?.map(({ title, _id }) => (
+              <TagItem key={_id} count={title}>
                 {_id}
               </TagItem>
             ))}

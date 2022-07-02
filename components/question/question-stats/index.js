@@ -6,14 +6,14 @@ const QuestionStats = ({ voteCount, answerCount, view }) => {
   return (
     <div className={styles.container}>
       <div className={styles.vote}>
-        <span>{voteCount}</span>
-        <p>votes</p>
+        <span>{view}</span>
+        <p>likes</p>
       </div>
-      <div className={styles.answer}>
+      {/* <div className={styles.answer}>
         <span>{answerCount}</span>
         <p>answers</p>
-      </div>
-      <p className={styles.view}>{view} views</p>
+      </div> */}
+      {/* <p className={styles.view}>{view} likes</p> */}
     </div>
   )
 }

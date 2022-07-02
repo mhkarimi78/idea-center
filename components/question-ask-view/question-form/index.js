@@ -1,50 +1,56 @@
-import React, { useState, useContext } from 'react'
-import { useRouter } from 'next/router'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
+import React, { useState, useContext } from "react";
+import { useRouter } from "next/router";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
-import { FetchContext } from '../../../store/fetch'
+import { FetchContext } from "../../../store/fetch";
 
-import Button from '../../button'
-import Textarea from '../../textarea'
-import FormInput from '../../form-input'
-import TagInput from '../../tag-input'
+import Button from "../../button";
+import Textarea from "../../textarea";
+import FormInput from "../../form-input";
+import TagInput from "../../tag-input";
 
-import styles from './question-form.module.css'
+import styles from "./question-form.module.css";
 
 const QuestionForm = () => {
-  const router = useRouter()
-  const { authAxios } = useContext(FetchContext)
+  const router = useRouter();
+  const { authAxios } = useContext(FetchContext);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   return (
     <Formik
-      initialValues={{ title: '', text: '', tags: [] }}
+      initialValues={{ title: "", description: "", tags: [] }}
       onSubmit={async (values, { setStatus, resetForm }) => {
-        setLoading(true)
+        setLoading(true);
         try {
-          await authAxios.post('questions', values)
-          resetForm({})
-          router.push('/')
+          await authAxios.post("offer/", {
+            title: values.title,
+            description: values.description,
+            categories: values.tags,
+          });
+          resetForm({});
+          router.push("/");
         } catch (error) {
-          setStatus('error.response.data.message')
+          setStatus(error.response.data?.categories);
         }
-        setLoading(false)
+        setLoading(false);
       }}
       validationSchema={Yup.object({
         title: Yup.string()
-          .required('Title is missing.')
-          .max(150, 'Title cannot be longer than 150 characters.')
-          .min(15, 'Title must be at least 15 characters.'),
-        text: Yup.string()
-          .required('Body is missing.')
-          .min(30, 'Body must be at least 30 characters.')
-          .max(30000, 'Body cannot be longer than 30000 characters.'),
+          .required("Title is missing.")
+          .max(150, "Title cannot be longer than 150 characters.")
+          .min(15, "Title must be at least 15 characters."),
+        description: Yup.string()
+          .required("Body is missing.")
+          .min(30, "Body must be at least 30 characters.")
+          .max(30000, "Body cannot be longer than 30000 characters."),
         tags: Yup.array()
-          .required('Please enter at least one tag.')
-          .max(5, 'Please enter no more than 5 tags.')
-          .of(Yup.string().max(15, 'Tag cannot be longer than 15 characters. '))
+          .required("Please enter at least one tag.")
+          .max(5, "Please enter no more than 5 tags.")
+          .of(
+            Yup.string().max(15, "Tag cannot be longer than 15 characters. ")
+          ),
       })}
     >
       {({
@@ -56,7 +62,7 @@ const QuestionForm = () => {
         setFieldValue,
         handleBlur,
         handleSubmit,
-        isSubmitting
+        isSubmitting,
       }) => (
         <form onSubmit={handleSubmit}>
           <div className={styles.container}>
@@ -76,13 +82,13 @@ const QuestionForm = () => {
             <Textarea
               label="Body"
               inputInfo="Include all the information"
-              name="text"
+              name="description"
               autoComplete="off"
-              value={values.text}
+              value={values.description}
               onChange={handleChange}
               onBlur={handleBlur}
-              hasError={touched.text && errors.text}
-              errorMessage={errors.text && errors.text}
+              hasError={touched.description && errors.description}
+              errorMessage={errors.description && errors.description}
             />
             <TagInput
               label="Tags"
@@ -90,7 +96,13 @@ const QuestionForm = () => {
               type="text"
               name="tags"
               value={values.tags}
-              onChange={(e) => setFieldValue('tags', e, true)}
+              onChange={(e) => {
+                // if (e[e.length - 1] == "حیاط") {
+                //   setFieldValue("tags", 1, true);
+                // } else {
+                  setFieldValue("tags", e, true);
+                // }
+              }}
               onBlur={handleBlur}
               hasError={touched.tags && errors.tags}
               errorMessage={errors.tags && errors.tags}
@@ -112,7 +124,7 @@ const QuestionForm = () => {
         </form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
-export default QuestionForm
+export default QuestionForm;

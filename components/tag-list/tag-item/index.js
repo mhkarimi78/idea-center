@@ -10,7 +10,7 @@ const TagItem = ({ count, children }) => {
       <div className={styles.header}>
         <Tag>{children}</Tag>
       </div>
-      <p>{count} ideas</p>
+      <p>ایده های {count} </p>
     </div>
   )
 }

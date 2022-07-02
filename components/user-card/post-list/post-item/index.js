@@ -9,7 +9,7 @@ const PostItem = ({ vote, title, created, id }) => {
   return (
     <div className={styles.container}>
       <div className={styles.vote}>{vote}</div>
-      <Link href="/questions/[slug]" as={`/questions/${id}-${slug(title)}`}>
+      <Link href="/ideas/[slug]" as={`/ideas/${id}-${slug(title)}`}>
         <a className={styles.title}>{title}</a>
       </Link>
       <div className={styles.created}>

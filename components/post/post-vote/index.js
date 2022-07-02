@@ -1,47 +1,48 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from "react";
 
-import { AuthContext } from '../../../store/auth'
-import { FetchContext } from '../../../store/fetch'
-import ModalContext from '../../../store/modal'
+import { AuthContext } from "../../../store/auth";
+import { FetchContext } from "../../../store/fetch";
+import ModalContext from "../../../store/modal";
 
-import Button from '../../button'
-import { ArrowUp, ArrowDown } from '../../icons'
+import Button from "../../button";
+import { ArrowUp, ArrowDown } from "../../icons";
 
-import styles from './post-vote.module.css'
+import styles from "./post-vote.module.css";
 
-const PostVote = ({ score, votes, questionId, answerId, setQuestion }) => {
-  const { authState, isAuthenticated } = useContext(AuthContext)
-  const { authAxios } = useContext(FetchContext)
-  const { handleComponentVisible } = useContext(ModalContext)
+const PostVote = ({ score = 0, votes, questionId, answerId, setQuestion }) => {
+  const { authState, isAuthenticated } = useContext(AuthContext);
+  const { authAxios } = useContext(FetchContext);
+  const { handleComponentVisible } = useContext(ModalContext);
+  const [ideaScore, setIdeaScore] = useState(score);
 
   const isUpVoted = () => {
-    return votes.find((v) => v.user === authState.userInfo?.id)?.vote === 1
-  }
+    return votes?.find((v) => v.user === authState.userInfo?.id)?.vote === 1;
+  };
 
   const isDownVoted = () => {
-    return votes.find((v) => v.user === authState.userInfo?.id)?.vote === -1
-  }
+    return votes?.find((v) => v.user === authState.userInfo?.id)?.vote === -1;
+  };
 
   const upVote = async () => {
-    const { data } = await authAxios.get(
-      `/votes/upvote/${questionId}/${answerId ? answerId : ''}`
-    )
-    setQuestion(data)
-  }
+    const { data } = await authAxios.get(`/offer/like/${questionId}`);
+    // setQuestion(data);
+    setIdeaScore(score + 1);
+  };
 
   const downVote = async () => {
-    const { data } = await authAxios.get(
-      `/votes/downvote/${questionId}/${answerId ? answerId : ''}`
-    )
-    setQuestion(data)
-  }
+    // const { data } = await authAxios.get(
+    //   `/votes/downvote/${questionId}/${answerId ? answerId : ""}`
+    // );
+    // setQuestion(data);
+    setIdeaScore(score - 1);
+  };
 
   const unVote = async () => {
     const { data } = await authAxios.get(
-      `/votes/unvote/${questionId}/${answerId ? answerId : ''}`
-    )
-    setQuestion(data)
-  }
+      `/votes/unvote/${questionId}/${answerId ? answerId : ""}`
+    );
+    setQuestion(data);
+  };
 
   return (
     <div className={styles.voteCell}>
@@ -52,12 +53,12 @@ const PostVote = ({ score, votes, questionId, answerId, setQuestion }) => {
             ? isUpVoted()
               ? unVote()
               : upVote()
-            : handleComponentVisible(true, 'signup')
+            : handleComponentVisible(true, "signup")
         }
       >
-        <ArrowUp className={isUpVoted() ? styles.voted : ''} />
+        <ArrowUp className={isUpVoted() ? styles.voted : ""} />
       </Button>
-      <div className={styles.score}>{score}</div>
+      <div className={styles.score}>{ideaScore}</div>
       <Button
         className={styles.voteButton}
         onClick={() =>
@@ -65,13 +66,13 @@ const PostVote = ({ score, votes, questionId, answerId, setQuestion }) => {
             ? isDownVoted()
               ? unVote()
               : downVote()
-            : handleComponentVisible(true, 'signup')
+            : handleComponentVisible(true, "signup")
         }
       >
-        <ArrowDown className={isDownVoted() ? styles.voted : ''} />
+        <ArrowDown className={isDownVoted() ? styles.voted : ""} />
       </Button>
     </div>
-  )
-}
+  );
+};
 
-export default PostVote
+export default PostVote;

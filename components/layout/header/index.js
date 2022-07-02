@@ -54,7 +54,7 @@ const Header = ({ className, ...props }) => {
         {isAuthenticated() ? (
           <div className={styles.userInfo}>
             <p>
-              Welcome{' '}
+              Welcome{' '} to Idea Center{" "}
               <Link
                 href="/users/[user]"
                 as={`/users/${authState.userInfo.username}`}

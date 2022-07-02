@@ -1,51 +1,73 @@
-import React, { useState, useContext } from 'react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
+import React, { useState, useContext } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
-import { publicFetch } from '../../../util/fetcher'
-import { AuthContext } from '../../../store/auth'
-import ModalContext from '../../../store/modal'
+import { publicFetch } from "../../../util/fetcher";
+import { AuthContext } from "../../../store/auth";
+import ModalContext from "../../../store/modal";
 
-import FormInput from '../../form-input'
-import Button from '../../button'
+import FormInput from "../../form-input";
+import Button from "../../button";
 
-import styles from './signup-form.module.css'
+import styles from "./signup-form.module.css";
 
 const SignupForm = () => {
-  const { setAuthState } = useContext(AuthContext)
-  const { setIsComponentVisible } = useContext(ModalContext)
-
-  const [loading, setLoading] = useState(false)
+  const { setAuthState } = useContext(AuthContext);
+  const { setIsComponentVisible } = useContext(ModalContext);
+  const [loading, setLoading] = useState(false);
 
   return (
     <Formik
-      initialValues={{ username: '', password: '', passwordConfirmation: '' }}
+      initialValues={{ username: "", password: "", email: "" }}
       onSubmit={async (values, { setStatus, resetForm }) => {
-        setLoading(true)
-        try {
-          const { data } = await publicFetch.post('signup', values)
-          const { token, expiresAt, userInfo } = data
-          setAuthState({ token, expiresAt, userInfo })
-          resetForm({})
-          setIsComponentVisible(false)
-        } catch (error) {
-          setStatus(error.response.data.message)
-        }
-        setLoading(false)
+        setLoading(true);
+
+        // const { data } = await
+        publicFetch
+          .post("auth/users/", values)
+          .then((result) => {
+            publicFetch
+              .post("token/login/", {
+                email: values.email,
+                password: values.password,
+              })
+              .then((res) => {
+                const token = res?.data?.auth_token;
+                const userInfo = {
+                  email: values.email,
+                  username: values.username,
+                  password: values.password,
+                };
+                setAuthState({ token, userInfo });
+                resetForm({});
+                setIsComponentVisible(false);
+              });
+          })
+          .catch((error) => {
+            setStatus(
+              error?.response?.data?.password || error?.response?.data?.username
+            );
+          });
+
+        setLoading(false);
       }}
       validationSchema={Yup.object({
         username: Yup.string()
-          .required('Required')
-          .max(16, 'Must be at most 16 characters long')
-          .matches(/^[a-zA-Z0-9_-]+$/, 'Contains invalid characters'),
+          .required("Required")
+          .max(16, "Must be at most 16 characters long")
+          .matches(/^[a-zA-Z0-9_-]+$/, "Contains invalid characters"),
         password: Yup.string()
-          .required('Required')
-          .min(6, 'Must be at least 6 characters long')
-          .max(50, 'Must be at most 50 characters long'),
+          .required("Required")
+          .min(8, "Must be at least 8 characters long")
+          .max(50, "Must be at most 50 characters long"),
+        email: Yup.string()
+          .required("Required")
+          .min(8, "Must be at least 8 characters long")
+          .max(50, "Must be at most 50 characters long"),
         passwordConfirmation: Yup.string().oneOf(
-          [Yup.ref('password'), null],
-          'Passwords must match'
-        )
+          [Yup.ref("password"), null],
+          "Passwords must match"
+        ),
       })}
     >
       {({
@@ -56,7 +78,7 @@ const SignupForm = () => {
         handleChange,
         handleBlur,
         handleSubmit,
-        isSubmitting
+        isSubmitting,
       }) => (
         <form onSubmit={handleSubmit} className={styles.form}>
           <FormInput
@@ -71,15 +93,15 @@ const SignupForm = () => {
             errorMessage={errors.username && errors.username}
           />
           <FormInput
-            label="Phone Number"
+            label="Email"
             type="text"
-            name="username"
+            name="email"
             autoComplete="off"
-            value={values.username}
+            value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
-            hasError={touched.username && errors.username}
-            errorMessage={errors.username && errors.username}
+            hasError={touched.email && errors.email}
+            errorMessage={errors.email && errors.email}
           />
           <FormInput
             label="Password"
@@ -121,7 +143,7 @@ const SignupForm = () => {
         </form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
-export default SignupForm
+export default SignupForm;
